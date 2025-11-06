@@ -1,0 +1,34 @@
+<div class="consultor-form-container">
+  <h2>{{ isEditMode ? 'Editar Consultor' : 'Novo Consultor' }}</h2>
+
+  <form (ngSubmit)="submit()">
+    <div>
+      <label>Nome Completo:</label>
+      <input type="text" [(ngModel)]="consultor.nome" name="nome" required>
+    </div>
+
+    <div>
+      <label>Email:</label>
+      <input type="email" [(ngModel)]="consultor.email" name="email" required>
+    </div>
+
+    <div>
+      <label>Telefone:</label>
+      <input type="text" [(ngModel)]="consultor.telefone" name="telefone" required>
+    </div>
+
+    <div>
+      <label>Área de Especialização:</label>
+      <input type="text" [(ngModel)]="consultor.areaEspecializacao" name="areaEspecializacao" required>
+    </div>
+
+    <div *ngIf="errorMessage" class="error">
+      {{ errorMessage }}
+    </div>
+
+    <div class="actions">
+      <button type="submit">{{ isEditMode ? 'Atualizar' : 'Criar' }}</button>
+      <button type="button" (click)="cancel()">Cancelar</button>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,55 @@
+<div class="consultores-list-container">
+  <div class="header">
+    <h1>Consultores</h1>
+    <button (click)="logout()">Sair</button>
+  </div>
+
+  <div class="actions">
+    <button (click)="newConsultor()">Novo Consultor</button>
+    
+    <div class="filters">
+      <input 
+        type="text" 
+        placeholder="Buscar por nome ou email..." 
+        [(ngModel)]="busca"
+        (input)="onBuscaChange()">
+      
+      <select [(ngModel)]="areaFiltro" (change)="onAreaChange()">
+        <option value="">Todas as áreas</option>
+        <option *ngFor="let area of areas" [value]="area">{{ area }}</option>
+      </select>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="loading">Carregando...</div>
+
+  <table *ngIf="!loading && filteredConsultores.length > 0">
+    <thead>
+      <tr>
+        <th>Nome</th>
+        <th>Email</th>
+        <th>Telefone</th>
+        <th>Área</th>
+        <th>Data Cadastro</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let consultor of filteredConsultores">
+        <td>{{ consultor.nome }}</td>
+        <td>{{ consultor.email }}</td>
+        <td>{{ consultor.telefone }}</td>
+        <td>{{ consultor.areaEspecializacao }}</td>
+        <td>{{ formatDate(consultor.dataCadastro) }}</td>
+        <td>
+          <button (click)="editConsultor(consultor._id!)">Editar</button>
+          <button (click)="deleteConsultor(consultor._id!)">Excluir</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div *ngIf="!loading && filteredConsultores.length === 0" class="no-data">
+    Nenhum consultor encontrado
+  </div>
+</div>

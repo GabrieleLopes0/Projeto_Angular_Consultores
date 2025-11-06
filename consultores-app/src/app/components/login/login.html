@@ -1,0 +1,24 @@
+<div class="login-container">
+  <h2>{{ isRegistering ? 'Registrar' : 'Login' }}</h2>
+  
+  <form (ngSubmit)="submit()">
+    <div>
+      <label>Email:</label>
+      <input type="email" [(ngModel)]="email" name="email" required>
+    </div>
+    
+    <div>
+      <label>Senha:</label>
+      <input type="password" [(ngModel)]="password" name="password" required>
+    </div>
+    
+    <div *ngIf="errorMessage" class="error">
+      {{ errorMessage }}
+    </div>
+    
+    <button type="submit">{{ isRegistering ? 'Registrar' : 'Entrar' }}</button>
+    <button type="button" (click)="toggleMode()">
+      {{ isRegistering ? 'Já tenho conta' : 'Criar conta' }}
+    </button>
+  </form>
+</div>
