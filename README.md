@@ -18,7 +18,7 @@ npm install
 
 3. Crie um arquivo `.env` na pasta `backend` com:
 ```env
-PORT=3000
+PORT=3001
 MONGODB_URI=mongodb://localhost:27017/consultores
 ```
 
@@ -27,7 +27,7 @@ MONGODB_URI=mongodb://localhost:27017/consultores
 npm start
 ```
 
-✅ Backend rodando em `http://localhost:3000`
+✅ Backend rodando em `http://localhost:3001`
 
 ### Frontend
 

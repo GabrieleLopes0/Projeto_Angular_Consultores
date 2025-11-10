@@ -14,7 +14,7 @@ if (Test-Path $envPath) {
 
 $conteudo = @"
 # Configuração do Backend
-PORT=3000
+PORT=3001
 
 # MongoDB Local
 MONGODB_URI=mongodb://localhost:27017/consultores

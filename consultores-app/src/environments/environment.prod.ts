@@ -3,7 +3,7 @@
 
 export const environment = {
   production: true,
-  apiUrl: 'http://localhost:3000/api', // Altere para sua URL de produção quando fizer deploy
+  apiUrl: 'http://localhost:3001/api', // Altere para sua URL de produção quando fizer deploy
   firebase: {
     apiKey: 'AIzaSyAPUDadOmLqwbChNq4NjQUVU8eqn_Si5uw',
     authDomain: 'consultores-app-5f8f4.firebaseapp.com',

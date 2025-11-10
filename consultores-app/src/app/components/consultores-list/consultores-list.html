@@ -6,14 +6,14 @@
 
   <div class="actions">
     <button (click)="newConsultor()">Novo Consultor</button>
-    
+
     <div class="filters">
-      <input 
-        type="text" 
-        placeholder="Buscar por nome ou email..." 
+      <input
+        type="text"
+        placeholder="Buscar por nome ou email..."
         [(ngModel)]="busca"
         (input)="onBuscaChange()">
-      
+
       <select [(ngModel)]="areaFiltro" (change)="onAreaChange()">
         <option value="">Todas as áreas</option>
         <option *ngFor="let area of areas" [value]="area">{{ area }}</option>
@@ -28,6 +28,7 @@
       <tr>
         <th>Nome</th>
         <th>Email</th>
+        <th>Senha</th>
         <th>Telefone</th>
         <th>Área</th>
         <th>Data Cadastro</th>
@@ -38,6 +39,7 @@
       <tr *ngFor="let consultor of filteredConsultores">
         <td>{{ consultor.nome }}</td>
         <td>{{ consultor.email }}</td>
+        <!-- <td>{{ consultor.senha }}</td> -->
         <td>{{ consultor.telefone }}</td>
         <td>{{ consultor.areaEspecializacao }}</td>
         <td>{{ formatDate(consultor.dataCadastro) }}</td>

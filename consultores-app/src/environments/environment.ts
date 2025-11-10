@@ -8,7 +8,7 @@
 
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:3000/api',
+  apiUrl: 'http://localhost:3001/api',
   firebase: {
     apiKey: 'AIzaSyAPUDadOmLqwbChNq4NjQUVU8eqn_Si5uw',
     authDomain: 'consultores-app-5f8f4.firebaseapp.com',

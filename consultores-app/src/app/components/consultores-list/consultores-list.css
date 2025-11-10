@@ -1,0 +1,200 @@
+.consultores-list-container {
+  max-width: 1100px;
+  margin: 2.5rem auto;
+  padding: 2rem 2.5rem;
+  box-sizing: border-box;
+  background-color: #ffffff;
+  border-radius: 1rem;
+  box-shadow: 0 8px 30px rgba(15, 23, 42, 0.08);
+  font-family: 'Poppins';
+  color: #183878;
+}
+
+.consultores-list-container .header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.consultores-list-container .header h1 {
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #183878;
+}
+
+.consultores-list-container .header button {
+  padding: 0.55rem 1.1rem;
+  border-radius: 0.6rem;
+  border: 1px solid rgba(148, 163, 184, 0.9);
+  background-color: #ffffff;
+  color: #526689;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.consultores-list-container .header button:hover {
+  background-color: #f3f4f6;
+  color: #183878;
+  box-shadow: 0 2px 10px rgba(148, 163, 184, 0.35);
+}
+
+.consultores-list-container .actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.consultores-list-container .actions > button {
+  padding: 0.7rem 1.4rem;
+  border-radius: 0.6rem;
+  border: none;
+  background-color: #183878;
+  color: #f9fafb;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: 0 2px 18px rgba(7, 3, 70, 0.35);
+  transition: background 0.15s ease, transform 0.08s ease, box-shadow 0.15s ease;
+}
+
+.consultores-list-container .actions > button:hover {
+  background-color: rgb(18, 47, 98);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 20px rgba(7, 3, 70, 0.4);
+}
+
+.consultores-list-container .filters {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.consultores-list-container .filters input,
+.consultores-list-container .filters select {
+  padding: 0.55rem 0.8rem;
+  border-radius: 0.6rem;
+  border: 1px solid rgba(148, 163, 184, 0.9);
+  font-size: 0.9rem;
+  color: #526689;
+  min-width: 180px;
+  outline: none;
+  box-sizing: border-box;
+  transition: box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.consultores-list-container .filters input:focus,
+.consultores-list-container .filters select:focus {
+  border-color: #183878;
+  box-shadow: 0 0 0 1px rgba(24, 56, 120, 0.5);
+}
+
+.consultores-list-container .loading,
+.consultores-list-container .no-data {
+  margin-top: 1rem;
+  font-size: 0.95rem;
+  color: #526689;
+}
+
+.consultores-list-container table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.consultores-list-container thead {
+  background-color: #f3f4f6;
+}
+
+.consultores-list-container th,
+.consultores-list-container td {
+  padding: 0.75rem 0.8rem;
+  text-align: left;
+}
+
+.consultores-list-container th {
+  font-weight: 600;
+  color: #526689;
+  text-transform: uppercase;
+  font-size: 0.78rem;
+  border-bottom: 1px solid rgba(209, 213, 219, 0.9);
+}
+
+.consultores-list-container tbody tr {
+  border-bottom: 1px solid rgba(229, 231, 235, 0.9);
+}
+
+.consultores-list-container tbody tr:nth-child(even) {
+  background-color: #f9fafb;
+}
+
+.consultores-list-container tbody tr:hover {
+  background-color: #eef2ff;
+}
+
+.consultores-list-container td button {
+  padding: 0.4rem 0.8rem;
+  border-radius: 0.5rem;
+  border: none;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  cursor: pointer;
+  margin-right: 0.4rem;
+  transition: background 0.15s ease, transform 0.08s ease, box-shadow 0.15s ease;
+}
+
+.consultores-list-container td button:first-child {
+  background-color: #e5efff;
+  color: #183878;
+}
+
+.consultores-list-container td button:first-child:hover {
+  background-color: #d1ddff;
+  transform: translateY(-1px);
+}
+
+.consultores-list-container td button:last-child {
+  background-color: #fee2e2;
+  color: #7f1d1d;
+}
+
+.consultores-list-container td button:last-child:hover {
+  background-color: #fecaca;
+  transform: translateY(-1px);
+}
+
+@media (max-width: 768px) {
+  .consultores-list-container {
+    margin: 1.5rem;
+    padding: 1.5rem;
+  }
+
+  .consultores-list-container .actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .consultores-list-container .filters {
+    width: 100%;
+  }
+
+  .consultores-list-container .filters input,
+  .consultores-list-container .filters select {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .consultores-list-container table {
+    font-size: 0.85rem;
+  }
+}
