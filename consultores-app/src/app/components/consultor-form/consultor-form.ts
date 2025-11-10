@@ -77,7 +77,6 @@ export class ConsultorForm implements OnInit {
       //     this.errorMessage = error.error?.error || 'Erro ao criar consultor';
       //   }
       // });
-            // CRIAR: 1) registra no Firebase  2) cria consultor no backend
       this.authService.register(this.consultor.email, this.password)
         .then(() => {
           this.consultorService.create(this.consultor).subscribe({
@@ -113,10 +112,10 @@ export class ConsultorForm implements OnInit {
       return false;
     }
 
-        // senha só obrigatória na criação
+        // senha só é obrigatória na criação
     if (!this.isEditMode && !this.password) {
-      this.errorMessage = 'Senha é obrigatória para novo consultor';
-      return false;
+      this.errorMessage = 'Senha é obrigatória';
+            return false;
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
