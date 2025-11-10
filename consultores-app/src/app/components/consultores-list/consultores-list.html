@@ -28,7 +28,6 @@
       <tr>
         <th>Nome</th>
         <th>Email</th>
-        <th>Senha</th>
         <th>Telefone</th>
         <th>Área</th>
         <th>Data Cadastro</th>
@@ -39,10 +38,9 @@
       <tr *ngFor="let consultor of filteredConsultores">
         <td>{{ consultor.nome }}</td>
         <td>{{ consultor.email }}</td>
-        <!-- <td>{{ consultor.senha }}</td> -->
         <td>{{ consultor.telefone }}</td>
         <td>{{ consultor.areaEspecializacao }}</td>
-        <td>{{ formatDate(consultor.dataCadastro) }}</td>
+      <td>{{ formatDate(consultor.dataCadastro || consultor.createdAt) }}</td>
         <td>
           <button (click)="editConsultor(consultor._id!)">Editar</button>
           <button (click)="deleteConsultor(consultor._id!)">Excluir</button>

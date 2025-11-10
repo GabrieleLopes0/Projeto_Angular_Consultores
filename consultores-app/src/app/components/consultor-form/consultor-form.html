@@ -12,9 +12,9 @@
       <input type="email" [(ngModel)]="consultor.email" name="email" required>
     </div>
 
-    <div>
+    <div *ngIf="!isEditMode">
       <label>Senha:</label>
-      <input type="password" name="password" required>
+      <input type="password" [(ngModel)]="password" name="password" required>
     </div>
 
     <div>
