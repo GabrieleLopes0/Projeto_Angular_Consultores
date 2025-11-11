@@ -5,6 +5,8 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "build:prod": "ng build --configuration production",
+    "serve:prod": "ng build --configuration production && npx http-server dist/consultores-app/browser -p 8080 -c-1",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },

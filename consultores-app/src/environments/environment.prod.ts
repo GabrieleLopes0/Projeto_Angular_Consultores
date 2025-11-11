@@ -3,9 +3,7 @@
 
 export const environment = {
   production: true,
-  // IMPORTANTE: Altere para a URL do seu backend em produção
-  // Exemplo: 'https://consultores-backend.onrender.com/api'
-  apiUrl: 'https://seu-backend.onrender.com/api',
+  apiUrl: 'https://projeto-angular-consultores.onrender.com/api',
   firebase: {
     apiKey: 'AIzaSyAPUDadOmLqwbChNq4NjQUVU8eqn_Si5uw',
     authDomain: 'consultores-app-5f8f4.firebaseapp.com',

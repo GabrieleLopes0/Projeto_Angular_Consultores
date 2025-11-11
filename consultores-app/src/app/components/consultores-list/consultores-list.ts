@@ -57,11 +57,13 @@ export class ConsultoresList implements OnInit, OnDestroy {
   loadAllAreas() {
     this.consultorService.getAll().subscribe({
       next: (data) => {
-        this.allConsultores = data;
+        this.allConsultores = data || [];
         this.extractAreas();
       },
       error: (error) => {
         console.error('Erro ao carregar áreas:', error);
+        this.allConsultores = [];
+        this.areas = [];
       }
     });
   }
@@ -76,15 +78,34 @@ export class ConsultoresList implements OnInit, OnDestroy {
       },
       error: (error) => {
         console.error('Erro ao carregar consultores:', error);
+        console.error('URL tentada:', error.url || 'N/A');
+        console.error('Status:', error.status || 'N/A');
         this.loading = false;
+        this.consultores = [];
+        this.filteredConsultores = [];
+        
+        let errorMsg = 'Erro ao conectar com o servidor.';
+        if (error.status === 0) {
+          errorMsg += '\n\nO backend não está respondendo. Verifique se está rodando em http://localhost:3001';
+        } else if (error.status === 500) {
+          errorMsg += '\n\nErro no servidor (500). Verifique os logs do backend.';
+        } else if (error.status === 404) {
+          errorMsg += '\n\nEndpoint não encontrado. Verifique a URL da API.';
+        }
+        alert(errorMsg);
       }
     });
   }
 
   extractAreas() {
     const areasSet = new Set<string>();
-    this.allConsultores.forEach(c => areasSet.add(c.areaEspecializacao));
+    this.allConsultores.forEach(c => {
+      if (c.areaEspecializacao && c.areaEspecializacao.trim() !== '') {
+        areasSet.add(c.areaEspecializacao.trim());
+      }
+    });
     this.areas = Array.from(areasSet).sort();
+    console.log('Áreas extraídas:', this.areas);
   }
 
   onBuscaChange() {

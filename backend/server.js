@@ -29,7 +29,8 @@ app.use(cors({
   origin: [
     'http://localhost:4200',
     'https://seu-usuario.github.io',
-    /^https:\/\/.*\.github\.io$/
+    /^https:\/\/.*\.github\.io$/,
+    /^https:\/\/.*\.onrender\.com$/
   ],
   credentials: true
 }));

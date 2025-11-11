@@ -20,6 +20,7 @@ export class ConsultorService {
       params = params.set('area', area);
     }
 
+    console.log('Buscando consultores em:', this.apiUrl);
     return this.http.get<Consultor[]>(this.apiUrl, { params });
   }
 
