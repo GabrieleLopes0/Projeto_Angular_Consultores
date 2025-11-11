@@ -26,6 +26,7 @@ export class ConsultorForm implements OnInit {
   };
 
   password: string = '';
+  currentPassword: string = '';
 
   isEditMode: boolean = false;
   consultorId: string | null = null;
@@ -52,15 +53,45 @@ export class ConsultorForm implements OnInit {
     });
   }
 
-  submit() {
+  async submit() {
     if (!this.validateForm()) {
       return;
     }
 
     if (this.isEditMode && this.consultorId) {
+      if (this.password && this.password.trim() !== '') {
+        if (!this.currentPassword || this.currentPassword.trim() === '') {
+          this.errorMessage = 'Para alterar a senha, é necessário informar a senha atual';
+          return;
+        }
+        if (this.password.length < 6) {
+          this.errorMessage = 'A nova senha deve ter pelo menos 6 caracteres';
+          return;
+        }
+      }
+
       this.consultorService.update(this.consultorId, this.consultor).subscribe({
-        next: () => {
-          this.router.navigate(['/consultores']);
+        next: async () => {
+          if (this.password && this.password.trim() !== '' && this.currentPassword && this.currentPassword.trim() !== '') {
+            try {
+              await this.authService.updatePasswordByEmail(this.consultor.email, this.currentPassword, this.password);
+              this.password = '';
+              this.currentPassword = '';
+            } catch (error: any) {
+              console.error('Erro ao atualizar senha:', error);
+              if (error.code === 'auth/wrong-password') {
+                this.errorMessage = 'Senha atual incorreta';
+              } else if (error.code === 'auth/user-not-found') {
+                this.errorMessage = 'Usuário não encontrado no Firebase';
+              } else {
+                this.errorMessage = error.message || 'Erro ao atualizar senha';
+              }
+              return;
+            }
+          }
+          setTimeout(() => {
+            this.router.navigate(['/consultores']);
+          }, 200);
         },
         error: (error) => {
           console.error('Erro ao atualizar consultor:', error);
@@ -68,20 +99,13 @@ export class ConsultorForm implements OnInit {
         }
       });
     } else {
-      // this.consultorService.create(this.consultor).subscribe({
-      //   next: () => {
-      //     this.router.navigate(['/consultores']);
-      //   },
-      //   error: (error) => {
-      //     console.error('Erro ao criar consultor:', error);
-      //     this.errorMessage = error.error?.error || 'Erro ao criar consultor';
-      //   }
-      // });
       this.authService.register(this.consultor.email, this.password)
         .then(() => {
           this.consultorService.create(this.consultor).subscribe({
             next: () => {
-              this.router.navigate(['/consultores']);
+              setTimeout(() => {
+                this.router.navigate(['/consultores']);
+              }, 200);
             },
             error: (error) => {
               console.error('Erro ao criar consultor:', error);
@@ -112,7 +136,6 @@ export class ConsultorForm implements OnInit {
       return false;
     }
 
-        // senha só é obrigatória na criação
     if (!this.isEditMode && !this.password) {
       this.errorMessage = 'Senha é obrigatória';
             return false;

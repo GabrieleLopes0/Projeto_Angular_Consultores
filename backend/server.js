@@ -3,20 +3,43 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 require('dotenv').config();
 
+let admin = null;
+try {
+  admin = require('firebase-admin');
+  if (process.env.FIREBASE_PROJECT_ID && process.env.FIREBASE_PRIVATE_KEY) {
+    admin.initializeApp({
+      credential: admin.credential.cert({
+        projectId: process.env.FIREBASE_PROJECT_ID,
+        privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+        clientEmail: process.env.FIREBASE_CLIENT_EMAIL
+      })
+    });
+    console.log('Firebase Admin SDK inicializado');
+  } else {
+    console.log('Firebase Admin SDK não configurado - exclusão de credenciais desabilitada');
+  }
+} catch (error) {
+  console.log('Firebase Admin SDK não disponível - exclusão de credenciais desabilitada');
+}
+
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// Middleware
-app.use(cors());
+app.use(cors({
+  origin: [
+    'http://localhost:4200',
+    'https://seu-usuario.github.io',
+    /^https:\/\/.*\.github\.io$/
+  ],
+  credentials: true
+}));
 app.use(express.json());
 
-// Conexão com MongoDB
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/consultores';
 mongoose.connect(MONGODB_URI)
   .then(() => console.log('Conectado ao MongoDB'))
   .catch(err => console.error('Erro ao conectar ao MongoDB:', err));
 
-// Schema do Consultor
 const consultorSchema = new mongoose.Schema({
   nome: {
     type: String,
@@ -50,9 +73,6 @@ const consultorSchema = new mongoose.Schema({
 
 const Consultor = mongoose.model('Consultor', consultorSchema);
 
-// Rotas da API
-
-// GET /api/consultores - Listar todos os consultores
 app.get('/api/consultores', async (req, res) => {
   try {
     const { busca, area } = req.query;
@@ -76,7 +96,6 @@ app.get('/api/consultores', async (req, res) => {
   }
 });
 
-// GET /api/consultores/:id - Obter um consultor por ID
 app.get('/api/consultores/:id', async (req, res) => {
   try {
     const consultor = await Consultor.findById(req.params.id);
@@ -89,12 +108,10 @@ app.get('/api/consultores/:id', async (req, res) => {
   }
 });
 
-// POST /api/consultores - Criar um novo consultor
 app.post('/api/consultores', async (req, res) => {
   try {
     const { nome, email, telefone, areaEspecializacao } = req.body;
 
-    // Validação básica
     if (!nome || !email || !telefone || !areaEspecializacao) {
       return res.status(400).json({ error: 'Todos os campos são obrigatórios' });
     }
@@ -116,7 +133,6 @@ app.post('/api/consultores', async (req, res) => {
   }
 });
 
-// PUT /api/consultores/:id - Atualizar um consultor
 app.put('/api/consultores/:id', async (req, res) => {
   try {
     const { nome, email, telefone, areaEspecializacao } = req.body;
@@ -140,20 +156,51 @@ app.put('/api/consultores/:id', async (req, res) => {
   }
 });
 
-// DELETE /api/consultores/:id - Excluir um consultor
 app.delete('/api/consultores/:id', async (req, res) => {
   try {
-    const consultor = await Consultor.findByIdAndDelete(req.params.id);
+    const consultor = await Consultor.findById(req.params.id);
     if (!consultor) {
       return res.status(404).json({ error: 'Consultor não encontrado' });
     }
-    res.json({ message: 'Consultor excluído com sucesso' });
+
+    const email = consultor.email;
+
+    await Consultor.findByIdAndDelete(req.params.id);
+
+    let firebaseDeleted = false;
+    if (admin) {
+      try {
+        const userRecord = await admin.auth().getUserByEmail(email);
+        await admin.auth().deleteUser(userRecord.uid);
+        console.log(`Credencial do Firebase deletada para: ${email}`);
+        firebaseDeleted = true;
+      } catch (firebaseError) {
+        if (firebaseError.code === 'auth/user-not-found') {
+          console.log(`Usuário não encontrado no Firebase: ${email}`);
+          firebaseDeleted = true;
+        } else {
+          console.error('Erro ao deletar credencial do Firebase:', firebaseError.message);
+          console.error('Detalhes do erro:', firebaseError);
+        }
+      }
+    } else {
+      console.warn(`⚠️  Firebase Admin SDK não configurado. Credencial do Firebase NÃO foi deletada para: ${email}`);
+      console.warn('Para habilitar exclusão automática, configure as variáveis FIREBASE_PROJECT_ID, FIREBASE_PRIVATE_KEY e FIREBASE_CLIENT_EMAIL no arquivo .env');
+    }
+
+    if (firebaseDeleted) {
+      res.json({ message: 'Consultor e credencial do Firebase excluídos com sucesso' });
+    } else {
+      res.json({ 
+        message: 'Consultor excluído do banco de dados. A credencial do Firebase pode ainda existir.',
+        warning: 'Firebase Admin SDK não configurado ou erro ao deletar credencial'
+      });
+    }
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
-// Rota de teste
 app.get('/', (req, res) => {
   res.json({ message: 'API Consultores está funcionando!' });
 });

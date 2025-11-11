@@ -35,8 +35,8 @@ export class ConsultorService {
     return this.http.put<Consultor>(`${this.apiUrl}/${id}`, consultor);
   }
 
-  delete(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  delete(id: string): Observable<any> {
+    return this.http.delete<any>(`${this.apiUrl}/${id}`);
   }
 }
 

@@ -17,6 +17,14 @@
       <input type="password" [(ngModel)]="password" name="password" required>
     </div>
 
+    <div *ngIf="isEditMode">
+      <label>Senha Atual (obrigatória para alterar senha):</label>
+      <input type="password" [(ngModel)]="currentPassword" name="currentPassword" placeholder="Digite a senha atual">
+      
+      <label style="margin-top: 0.5rem;">Nova Senha (deixe em branco para não alterar):</label>
+      <input type="password" [(ngModel)]="password" name="password" placeholder="Digite a nova senha">
+    </div>
+
     <div>
       <label>Telefone:</label>
       <input type="text" [(ngModel)]="consultor.telefone" name="telefone" required>

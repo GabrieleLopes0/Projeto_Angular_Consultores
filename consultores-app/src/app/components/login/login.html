@@ -16,9 +16,11 @@
       {{ errorMessage }}
     </div>
 
-    <button type="submit">{{ isRegistering ? 'Registrar' : 'Entrar' }}</button>
-    <!-- <button type="button" (click)="toggleMode()">
-      {{ isRegistering ? 'Já tenho conta' : 'Criar conta' }}
-    </button> -->
+    <div class="actions">
+      <button type="submit">{{ isRegistering ? 'Registrar' : 'Entrar' }}</button>
+      <button type="button" (click)="toggleMode()">
+        {{ isRegistering ? 'Já tenho conta' : 'Criar conta' }}
+      </button>
+    </div>
   </form>
 </div>

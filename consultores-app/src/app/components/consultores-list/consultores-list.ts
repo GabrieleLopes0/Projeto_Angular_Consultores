@@ -1,10 +1,11 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterModule } from '@angular/router';
+import { Router, RouterModule, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ConsultorService } from '../../services/consultor.service';
 import { AuthService } from '../../services/auth.service';
 import { Consultor } from '../../models/consultor.model';
+import { filter, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-consultores-list',
@@ -12,10 +13,12 @@ import { Consultor } from '../../models/consultor.model';
   templateUrl: './consultores-list.html',
   styleUrl: './consultores-list.css',
 })
-export class ConsultoresList implements OnInit {
+export class ConsultoresList implements OnInit, OnDestroy {
   private consultorService = inject(ConsultorService);
   private authService = inject(AuthService);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
+  private routerSubscription?: Subscription;
 
   consultores: Consultor[] = [];
   filteredConsultores: Consultor[] = [];
@@ -23,15 +26,35 @@ export class ConsultoresList implements OnInit {
   areaFiltro: string = '';
   areas: string[] = [];
   loading: boolean = false;
-  allConsultores: Consultor[] = []; // Para extrair todas as áreas disponíveis
+  allConsultores: Consultor[] = [];
 
   ngOnInit() {
+    this.refreshData();
+
+    this.routerSubscription = this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe((event: NavigationEnd) => {
+        const currentUrl = event.urlAfterRedirects || event.url;
+        if (currentUrl === '/consultores' || currentUrl.startsWith('/consultores')) {
+          setTimeout(() => {
+            this.refreshData();
+          }, 50);
+        }
+      });
+  }
+
+  refreshData() {
     this.loadAllAreas();
     this.loadConsultores();
   }
 
+  ngOnDestroy() {
+    if (this.routerSubscription) {
+      this.routerSubscription.unsubscribe();
+    }
+  }
+
   loadAllAreas() {
-    // Carrega todos os consultores sem filtro para extrair todas as áreas disponíveis
     this.consultorService.getAll().subscribe({
       next: (data) => {
         this.allConsultores = data;
@@ -60,7 +83,6 @@ export class ConsultoresList implements OnInit {
 
   extractAreas() {
     const areasSet = new Set<string>();
-    // Extrai áreas de TODOS os consultores, não apenas dos filtrados
     this.allConsultores.forEach(c => areasSet.add(c.areaEspecializacao));
     this.areas = Array.from(areasSet).sort();
   }
@@ -74,11 +96,14 @@ export class ConsultoresList implements OnInit {
   }
 
   deleteConsultor(id: string) {
-    if (confirm('Tem certeza que deseja excluir este consultor?')) {
+    if (confirm('Tem certeza que deseja excluir este consultor? A credencial do Firebase também será removida.')) {
       this.consultorService.delete(id).subscribe({
-        next: () => {
-          this.loadAllAreas(); // Atualiza a lista de áreas
+        next: (response: any) => {
+          this.loadAllAreas();
           this.loadConsultores();
+          if (response?.warning) {
+            alert('⚠️ Consultor excluído, mas a credencial do Firebase pode ainda existir.\n\nConfigure o Firebase Admin SDK no backend para exclusão automática.\nVeja: backend/CONFIGURAR_FIREBASE_ADMIN.md');
+          }
         },
         error: (error) => {
           console.error('Erro ao excluir consultor:', error);
@@ -99,12 +124,6 @@ export class ConsultoresList implements OnInit {
   logout() {
     this.authService.logout();
   }
-
-  // formatDate(date: Date | string | undefined): string {
-  //   if (!date) return '';
-  //   const d = new Date(date);
-  //   return d.toLocaleDateString('pt-BR');
-  // }
 
   formatDate(date: any): string {
   if (!date) return '';

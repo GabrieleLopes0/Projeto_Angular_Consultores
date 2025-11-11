@@ -3,7 +3,9 @@
 
 export const environment = {
   production: true,
-  apiUrl: 'http://localhost:3001/api', // Altere para sua URL de produção quando fizer deploy
+  // IMPORTANTE: Altere para a URL do seu backend em produção
+  // Exemplo: 'https://consultores-backend.onrender.com/api'
+  apiUrl: 'https://seu-backend.onrender.com/api',
   firebase: {
     apiKey: 'AIzaSyAPUDadOmLqwbChNq4NjQUVU8eqn_Si5uw',
     authDomain: 'consultores-app-5f8f4.firebaseapp.com',
