@@ -1,29 +1,40 @@
 # 🔧 Configurar GitHub Pages
 
-## ⚠️ IMPORTANTE: Configuração no GitHub
+## 📋 Como Funciona
 
-Após fazer o deploy, você precisa configurar o GitHub Pages para usar a branch `gh-pages`:
+O workflow do GitHub Actions **cria automaticamente** a branch `gh-pages` quando você faz push para `main`. 
 
-### Passo a Passo:
+**IMPORTANTE:** A branch `gh-pages` só será criada **DEPOIS** que o workflow executar pela primeira vez!
 
-1. **Acesse seu repositório no GitHub**
-   - Vá para: `https://github.com/SEU-USUARIO/Projeto_Angular_Consultores`
+## 🚀 Passo a Passo:
 
-2. **Vá em Settings**
-   - Clique na aba **Settings** (no topo do repositório)
+### 1. Faça commit e push do workflow atualizado:
+```bash
+git add .
+git commit -m "Fix: Adicionar permissões para criar branch gh-pages"
+git push
+```
 
-3. **Vá em Pages** (menu lateral esquerdo)
-   - Role até encontrar **Pages** no menu lateral
+### 2. Aguarde o workflow executar:
+- Vá em **Actions** (aba no topo do repositório)
+- Clique no workflow **"Deploy to GitHub Pages"**
+- Aguarde ele terminar com ✅ (pode levar 2-5 minutos)
 
-4. **Configure a Source**
-   - Em **Source**, selecione: **Deploy from a branch**
-   - Em **Branch**, selecione: **gh-pages**
-   - Em **Folder**, selecione: **/ (root)**
-   - Clique em **Save**
+### 3. Verifique se a branch `gh-pages` foi criada:
+- Vá em **Code** → clique em **branches** (ou digite `gh-pages` na busca)
+- Você deve ver a branch `gh-pages` na lista
 
-5. **Aguarde alguns minutos**
-   - O GitHub Pages pode levar 1-5 minutos para publicar
-   - Você verá a URL em: `https://SEU-USUARIO.github.io/Projeto_Angular_Consultores/`
+### 4. Configure o GitHub Pages:
+1. Vá em **Settings** (aba no topo do repositório)
+2. Role até **Pages** (menu lateral esquerdo)
+3. Em **Source**, selecione: **Deploy from a branch**
+4. Em **Branch**, selecione: **gh-pages**
+5. Em **Folder**, selecione: **/ (root)**
+6. Clique em **Save**
+
+### 5. Aguarde alguns minutos:
+- O GitHub Pages pode levar 1-5 minutos para publicar
+- Você verá a URL em: `https://SEU-USUARIO.github.io/Projeto_Angular_Consultores/`
 
 ## ✅ Verificar se está funcionando:
 
