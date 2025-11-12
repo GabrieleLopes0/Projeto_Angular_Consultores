@@ -31,27 +31,36 @@ export class ConsultoresList implements OnInit, OnDestroy {
   currentUserEmail: string | null = null;
 
   async ngOnInit() {
-    try {
-      this.isAdmin = await this.authService.isAdmin();
-      this.currentUserEmail = await this.authService.getCurrentUserEmail();
-    } catch (error) {
-      console.error('Erro ao verificar permissões:', error);
-      this.isAdmin = false;
-      this.currentUserEmail = await this.authService.getCurrentUserEmail();
-    }
-    
+    await this.checkPermissions();
     this.refreshData();
 
     this.routerSubscription = this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
-      .subscribe((event: NavigationEnd) => {
+      .subscribe(async (event: NavigationEnd) => {
         const currentUrl = event.urlAfterRedirects || event.url;
         if (currentUrl === '/consultores' || currentUrl.startsWith('/consultores')) {
+          await this.checkPermissions();
           setTimeout(() => {
             this.refreshData();
           }, 50);
         }
       });
+  }
+
+  async checkPermissions() {
+    try {
+      const user = this.authService.getCurrentUser();
+      if (user) {
+        await user.getIdToken(true);
+      }
+      this.isAdmin = await this.authService.isAdmin();
+      this.currentUserEmail = await this.authService.getCurrentUserEmail();
+      console.log('Permissões verificadas - isAdmin:', this.isAdmin, 'email:', this.currentUserEmail);
+    } catch (error) {
+      console.error('Erro ao verificar permissões:', error);
+      this.isAdmin = false;
+      this.currentUserEmail = await this.authService.getCurrentUserEmail();
+    }
   }
 
   refreshData() {

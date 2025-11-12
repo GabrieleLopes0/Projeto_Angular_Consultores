@@ -133,9 +133,7 @@ export class ConsultorForm implements OnInit {
         .then(() => {
           this.consultorService.create(this.consultor).subscribe({
             next: () => {
-              setTimeout(() => {
-                this.router.navigate(['/consultores']);
-              }, 200);
+              this.router.navigate(['/consultores']);
             },
             error: (error) => {
               console.error('Erro ao criar consultor:', error);
