@@ -21,6 +21,7 @@ export class ConsultorService {
     }
 
     console.log('Buscando consultores em:', this.apiUrl);
+    console.log('Environment production:', environment.production);
     return this.http.get<Consultor[]>(this.apiUrl, { params });
   }
 

@@ -202,6 +202,59 @@ app.delete('/api/consultores/:id', async (req, res) => {
   }
 });
 
+app.post('/api/admin/set-role', async (req, res) => {
+  try {
+    const { email, role } = req.body;
+    
+    if (!admin) {
+      return res.status(500).json({ error: 'Firebase Admin SDK não configurado' });
+    }
+
+    if (!email || !role) {
+      return res.status(400).json({ error: 'Email e role são obrigatórios' });
+    }
+
+    if (role !== 'admin' && role !== 'user') {
+      return res.status(400).json({ error: 'Role deve ser "admin" ou "user"' });
+    }
+
+    const userRecord = await admin.auth().getUserByEmail(email);
+    await admin.auth().setCustomUserClaims(userRecord.uid, { role: role });
+    
+    res.json({ 
+      message: `Role "${role}" definida com sucesso para ${email}`,
+      uid: userRecord.uid
+    });
+  } catch (error) {
+    if (error.code === 'auth/user-not-found') {
+      return res.status(404).json({ error: 'Usuário não encontrado no Firebase' });
+    }
+    console.error('Erro ao definir role:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get('/api/admin/check-role/:email', async (req, res) => {
+  try {
+    if (!admin) {
+      return res.status(500).json({ error: 'Firebase Admin SDK não configurado' });
+    }
+
+    const userRecord = await admin.auth().getUserByEmail(req.params.email);
+    const customClaims = userRecord.customClaims || {};
+    res.json({ 
+      email: req.params.email,
+      role: customClaims.role || 'user',
+      uid: userRecord.uid
+    });
+  } catch (error) {
+    if (error.code === 'auth/user-not-found') {
+      return res.status(404).json({ error: 'Usuário não encontrado no Firebase' });
+    }
+    res.status(500).json({ error: error.message });
+  }
+});
+
 app.get('/', (req, res) => {
   res.json({ message: 'API Consultores está funcionando!' });
 });

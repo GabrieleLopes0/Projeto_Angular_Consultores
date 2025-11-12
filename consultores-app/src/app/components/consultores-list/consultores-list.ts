@@ -27,8 +27,19 @@ export class ConsultoresList implements OnInit, OnDestroy {
   areas: string[] = [];
   loading: boolean = false;
   allConsultores: Consultor[] = [];
+  isAdmin: boolean = false;
+  currentUserEmail: string | null = null;
 
-  ngOnInit() {
+  async ngOnInit() {
+    try {
+      this.isAdmin = await this.authService.isAdmin();
+      this.currentUserEmail = await this.authService.getCurrentUserEmail();
+    } catch (error) {
+      console.error('Erro ao verificar permissões:', error);
+      this.isAdmin = false;
+      this.currentUserEmail = await this.authService.getCurrentUserEmail();
+    }
+    
     this.refreshData();
 
     this.routerSubscription = this.router.events
@@ -68,7 +79,7 @@ export class ConsultoresList implements OnInit, OnDestroy {
     });
   }
 
-  loadConsultores() {
+  loadConsultores(retryCount: number = 0) {
     this.loading = true;
     this.consultorService.getAll(this.busca, this.areaFiltro).subscribe({
       next: (data) => {
@@ -77,20 +88,52 @@ export class ConsultoresList implements OnInit, OnDestroy {
         this.loading = false;
       },
       error: (error) => {
+        const apiUrl = this.consultorService['apiUrl'] || 'N/A';
         console.error('Erro ao carregar consultores:', error);
-        console.error('URL tentada:', error.url || 'N/A');
+        console.error('URL tentada:', error.url || apiUrl);
         console.error('Status:', error.status || 'N/A');
+        
+        if (error.status === 503 && retryCount < 3 && apiUrl.includes('onrender.com')) {
+          console.log(`Tentativa ${retryCount + 1}/3: Backend iniciando, aguardando 5 segundos...`);
+          this.loading = false;
+          setTimeout(() => {
+            this.loadConsultores(retryCount + 1);
+          }, 5000);
+          return;
+        }
+        
         this.loading = false;
         this.consultores = [];
         this.filteredConsultores = [];
         
-        let errorMsg = 'Erro ao conectar com o servidor.';
-        if (error.status === 0) {
-          errorMsg += '\n\nO backend não está respondendo. Verifique se está rodando em http://localhost:3001';
+        let errorMsg = 'Erro ao conectar com o servidor.\n\n';
+        errorMsg += `URL: ${apiUrl}\n\n`;
+        
+        if (error.status === 0 || !error.status) {
+          if (apiUrl.includes('localhost')) {
+            errorMsg += 'O backend local não está respondendo.\n';
+            errorMsg += 'Verifique se o backend está rodando:\n';
+            errorMsg += '1. Abra um terminal\n';
+            errorMsg += '2. cd backend\n';
+            errorMsg += '3. npm start\n';
+            errorMsg += '\nO backend deve estar em: http://localhost:3001';
+          } else {
+            errorMsg += 'O backend remoto não está respondendo.\n';
+            errorMsg += 'Verifique se o backend no Render está online:\n';
+            errorMsg += 'https://projeto-angular-consultores.onrender.com';
+          }
         } else if (error.status === 500) {
-          errorMsg += '\n\nErro no servidor (500). Verifique os logs do backend.';
+          errorMsg += 'Erro no servidor (500).\nVerifique os logs do backend.';
         } else if (error.status === 404) {
-          errorMsg += '\n\nEndpoint não encontrado. Verifique a URL da API.';
+          errorMsg += 'Endpoint não encontrado (404).\nVerifique a URL da API.';
+        } else if (error.status === 401) {
+          errorMsg += 'Não autorizado (401).\nFaça login novamente.';
+        } else if (error.status === 503) {
+          errorMsg += 'Serviço temporariamente indisponível (503).\n';
+          errorMsg += 'O backend no Render está iniciando (pode levar 30-60 segundos).\n';
+          errorMsg += 'Aguarde alguns segundos e recarregue a página.';
+        } else {
+          errorMsg += `Erro HTTP ${error.status}: ${error.message || 'Erro desconhecido'}`;
         }
         alert(errorMsg);
       }
@@ -138,8 +181,32 @@ export class ConsultoresList implements OnInit, OnDestroy {
     this.router.navigate(['/consultores/editar', id]);
   }
 
+  async editOwnProfile() {
+    if (!this.currentUserEmail) {
+      return;
+    }
+    
+    const ownConsultor = this.consultores.find(c => c.email === this.currentUserEmail);
+    if (ownConsultor && ownConsultor._id) {
+      this.router.navigate(['/consultores/editar', ownConsultor._id]);
+    } else {
+      alert('Seu perfil não foi encontrado. Entre em contato com um administrador.');
+    }
+  }
+
   newConsultor() {
     this.router.navigate(['/consultores/novo']);
+  }
+
+  canEdit(consultor: Consultor): boolean {
+    if (this.isAdmin) {
+      return true;
+    }
+    return consultor.email === this.currentUserEmail;
+  }
+
+  canDelete(consultor: Consultor): boolean {
+    return this.isAdmin;
   }
 
   logout() {

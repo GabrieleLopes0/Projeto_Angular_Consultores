@@ -18,9 +18,45 @@ export class AuthService {
     });
   }
 
+  async isAdmin(): Promise<boolean> {
+    const user = this.auth.currentUser;
+    if (!user) {
+      return false;
+    }
+    
+    try {
+      const tokenResult = await user.getIdTokenResult();
+      return tokenResult.claims['role'] === 'admin';
+    } catch (error) {
+      console.error('Erro ao verificar role:', error);
+      return false;
+    }
+  }
+
+  async getUserRole(): Promise<string> {
+    const user = this.auth.currentUser;
+    if (!user) {
+      return 'user';
+    }
+    
+    try {
+      const tokenResult = await user.getIdTokenResult();
+      return tokenResult.claims['role'] || 'user';
+    } catch (error) {
+      console.error('Erro ao obter role:', error);
+      return 'user';
+    }
+  }
+
+  async getCurrentUserEmail(): Promise<string | null> {
+    const user = this.auth.currentUser;
+    return user?.email || null;
+  }
+
   async login(email: string, password: string): Promise<void> {
     try {
-      await signInWithEmailAndPassword(this.auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(this.auth, email, password);
+      await userCredential.user.getIdToken(true);
       this.router.navigate(['/consultores']);
     } catch (error) {
       throw error;

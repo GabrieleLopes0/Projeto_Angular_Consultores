@@ -1,7 +1,7 @@
 <div class="consultor-form-container">
   <h2>{{ isEditMode ? 'Editar Consultor' : 'Novo Consultor' }}</h2>
 
-  <form (ngSubmit)="submit()">
+  <form (ngSubmit)="submit()" *ngIf="canEditThisConsultor">
     <div>
       <label>Nome Completo:</label>
       <input type="text" [(ngModel)]="consultor.nome" name="nome" required>
@@ -9,7 +9,15 @@
 
     <div>
       <label>Email:</label>
-      <input type="email" [(ngModel)]="consultor.email" name="email" required>
+      <input 
+        type="email" 
+        [(ngModel)]="consultor.email" 
+        name="email" 
+        [disabled]="isEditMode && !isAdmin"
+        required>
+      <small *ngIf="isEditMode && !isAdmin" style="color: #6b7280; display: block; margin-top: 0.25rem;">
+        O email não pode ser alterado
+      </small>
     </div>
 
     <div *ngIf="!isEditMode">

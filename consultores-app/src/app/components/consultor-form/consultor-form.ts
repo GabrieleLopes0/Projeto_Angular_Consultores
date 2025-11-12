@@ -31,20 +31,41 @@ export class ConsultorForm implements OnInit {
   isEditMode: boolean = false;
   consultorId: string | null = null;
   errorMessage: string = '';
+  isAdmin: boolean = false;
+  currentUserEmail: string | null = null;
+  canEditThisConsultor: boolean = true;
 
-  ngOnInit() {
+  async ngOnInit() {
+    this.isAdmin = await this.authService.isAdmin();
+    this.currentUserEmail = await this.authService.getCurrentUserEmail();
+    
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.isEditMode = true;
       this.consultorId = id;
       this.loadConsultor(id);
+    } else {
+      if (!this.isAdmin) {
+        this.errorMessage = 'Apenas administradores podem criar novos consultores';
+        setTimeout(() => {
+          this.router.navigate(['/consultores']);
+        }, 2000);
+      }
     }
   }
 
   loadConsultor(id: string) {
     this.consultorService.getById(id).subscribe({
-      next: (data) => {
+      next: async (data) => {
         this.consultor = data;
+        
+        if (!this.isAdmin && this.consultor.email !== this.currentUserEmail) {
+          this.errorMessage = 'Você só pode editar seu próprio perfil';
+          this.canEditThisConsultor = false;
+          setTimeout(() => {
+            this.router.navigate(['/consultores']);
+          }, 2000);
+        }
       },
       error: (error) => {
         console.error('Erro ao carregar consultor:', error);
@@ -54,7 +75,16 @@ export class ConsultorForm implements OnInit {
   }
 
   async submit() {
+    if (!this.canEditThisConsultor) {
+      return;
+    }
+
     if (!this.validateForm()) {
+      return;
+    }
+
+    if (!this.isAdmin && this.isEditMode && this.consultor.email !== this.currentUserEmail) {
+      this.errorMessage = 'Você só pode editar seu próprio perfil';
       return;
     }
 

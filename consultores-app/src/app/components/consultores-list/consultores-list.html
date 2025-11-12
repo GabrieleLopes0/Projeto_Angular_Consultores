@@ -5,7 +5,10 @@
   </div>
 
   <div class="actions">
-    <button (click)="newConsultor()">Novo Consultor</button>
+    <div class="action-buttons">
+      <button *ngIf="isAdmin" (click)="newConsultor()">Novo Consultor</button>
+      <button *ngIf="!isAdmin" (click)="editOwnProfile()">Editar Meu Perfil</button>
+    </div>
 
     <div class="filters">
       <input
@@ -40,10 +43,10 @@
         <td>{{ consultor.email }}</td>
         <td>{{ consultor.telefone }}</td>
         <td>{{ consultor.areaEspecializacao }}</td>
-      <td>{{ formatDate(consultor.dataCadastro || consultor.createdAt) }}</td>
+        <td>{{ formatDate(consultor.dataCadastro || consultor.createdAt) }}</td>
         <td>
-          <button (click)="editConsultor(consultor._id!)">Editar</button>
-          <button (click)="deleteConsultor(consultor._id!)">Excluir</button>
+          <button *ngIf="canEdit(consultor)" (click)="editConsultor(consultor._id!)">Editar</button>
+          <button *ngIf="canDelete(consultor)" (click)="deleteConsultor(consultor._id!)">Excluir</button>
         </td>
       </tr>
     </tbody>
