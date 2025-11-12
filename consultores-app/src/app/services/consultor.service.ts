@@ -33,6 +33,10 @@ export class ConsultorService {
     return this.http.post<Consultor>(this.apiUrl, consultor);
   }
 
+  createUser(consultor: Consultor, password: string): Observable<Consultor> {
+    return this.http.post<Consultor>(this.apiUrl, { ...consultor, password });
+  }
+
   update(id: string, consultor: Consultor): Observable<Consultor> {
     return this.http.put<Consultor>(`${this.apiUrl}/${id}`, consultor);
   }

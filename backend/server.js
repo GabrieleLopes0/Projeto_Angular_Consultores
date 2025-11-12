@@ -111,10 +111,27 @@ app.get('/api/consultores/:id', async (req, res) => {
 
 app.post('/api/consultores', async (req, res) => {
   try {
-    const { nome, email, telefone, areaEspecializacao } = req.body;
+    const { nome, email, telefone, areaEspecializacao, password } = req.body;
 
     if (!nome || !email || !telefone || !areaEspecializacao) {
       return res.status(400).json({ error: 'Todos os campos são obrigatórios' });
+    }
+
+    if (password && admin) {
+      try {
+        await admin.auth().createUser({
+          email: email,
+          password: password,
+          emailVerified: false
+        });
+        console.log(`Usuário Firebase criado para: ${email}`);
+      } catch (firebaseError) {
+        if (firebaseError.code === 'auth/email-already-exists') {
+          return res.status(400).json({ error: 'Este email já está sendo usado para login' });
+        }
+        console.error('Erro ao criar usuário Firebase:', firebaseError.message);
+        return res.status(500).json({ error: 'Erro ao criar credencial de login' });
+      }
     }
 
     const consultor = new Consultor({

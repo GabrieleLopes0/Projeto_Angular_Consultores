@@ -5,6 +5,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { ConsultorService } from '../../services/consultor.service';
 import { Consultor } from '../../models/consultor.model';
 import { AuthService } from '../../services/auth.service';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-consultor-form',
@@ -129,28 +130,26 @@ export class ConsultorForm implements OnInit {
         }
       });
     } else {
-      this.authService.register(this.consultor.email, this.password)
-        .then(() => {
-          this.consultorService.create(this.consultor).subscribe({
-            next: () => {
-              this.router.navigate(['/consultores']);
-            },
-            error: (error) => {
-              console.error('Erro ao criar consultor:', error);
-              this.errorMessage = error.error?.error || 'Erro ao criar consultor';
-            }
-          });
-        })
-        .catch((error: any) => {
-          console.error('Erro ao registrar usuário:', error);
+      const currentAdminEmail = this.currentUserEmail;
+      
+      if (!currentAdminEmail) {
+        this.errorMessage = 'Erro: Não foi possível identificar o administrador atual';
+        return;
+      }
 
-          if (error.code === 'auth/email-already-in-use') {
-            this.errorMessage = 'Este email já está sendo usado para login';
-          } else {
-            this.errorMessage = error.message || 'Erro ao registrar usuário';
-          }
-        });
-
+      try {
+        await firstValueFrom(this.consultorService.createUser(this.consultor, this.password));
+        this.router.navigate(['/consultores']);
+      } catch (error: any) {
+        console.error('Erro ao criar consultor:', error);
+        if (error.error?.error) {
+          this.errorMessage = error.error.error;
+        } else if (error.message) {
+          this.errorMessage = error.message;
+        } else {
+          this.errorMessage = 'Erro ao criar consultor';
+        }
+      }
     }
   }
 
