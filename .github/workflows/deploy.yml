@@ -25,15 +25,44 @@ jobs:
       - name: Install dependencies
         run: |
           cd consultores-app
+          echo "📦 Installing dependencies..."
           npm install
+          echo "✅ Dependencies installed"
+      
+      - name: Verify Angular CLI
+        run: |
+          cd consultores-app
+          echo "🔍 Checking Angular CLI..."
+          npx ng version || echo "⚠️ ng version failed, but continuing..."
+          echo "Node version: $(node --version)"
+          echo "NPM version: $(npm --version)"
       
       - name: Build
         run: |
           cd consultores-app
           REPO_NAME="${{ github.event.repository.name }}"
-          echo "Repository name: $REPO_NAME"
-          echo "Building with base-href: /$REPO_NAME/"
-          npx ng build --configuration production --base-href /$REPO_NAME/
+          echo "📦 Repository name: $REPO_NAME"
+          echo "🔨 Starting build..."
+          echo "Current directory: $(pwd)"
+          echo "Files in directory:"
+          ls -la
+          
+          BASE_HREF="/$REPO_NAME/"
+          echo "Building with base-href: $BASE_HREF"
+          
+          echo "Running: npm run build:prod -- --base-href $BASE_HREF"
+          npm run build:prod -- --base-href "$BASE_HREF" 2>&1 || {
+            EXIT_CODE=$?
+            echo "❌ Build failed with exit code $EXIT_CODE"
+            echo "Checking for error logs..."
+            if [ -f "npm-debug.log" ]; then
+              echo "=== npm-debug.log ==="
+              tail -50 npm-debug.log
+            fi
+            exit $EXIT_CODE
+          }
+          
+          echo "✅ Build completed successfully"
         env:
           NODE_OPTIONS: '--max_old_space_size=4096'
       
