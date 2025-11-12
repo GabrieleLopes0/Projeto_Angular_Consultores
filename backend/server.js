@@ -28,7 +28,7 @@ const PORT = process.env.PORT || 3001;
 app.use(cors({
   origin: [
     'http://localhost:4200',
-    'https://seu-usuario.github.io',
+    'http://localhost:8080',
     /^https:\/\/.*\.github\.io$/,
     /^https:\/\/.*\.onrender\.com$/
   ],

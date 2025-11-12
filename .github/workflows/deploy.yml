@@ -29,9 +29,15 @@ jobs:
       - name: Build
         run: |
           cd consultores-app
-          npm run build -- --configuration production --base-href /${{ github.event.repository.name }}/
+          REPO_NAME="${{ github.event.repository.name }}"
+          echo "Building with base-href: /$REPO_NAME/"
+          npm run build -- --configuration production --base-href /$REPO_NAME/
         env:
           NODE_OPTIONS: '--max_old_space_size=4096'
+      
+      - name: Create .nojekyll file
+        run: |
+          touch ./consultores-app/dist/consultores-app/browser/.nojekyll
       
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
@@ -39,4 +45,5 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./consultores-app/dist/consultores-app/browser
           cname: false
+          keep_files: false
 
