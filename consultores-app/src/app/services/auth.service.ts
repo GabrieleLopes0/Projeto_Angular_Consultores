@@ -26,7 +26,7 @@ export class AuthService {
     
     try {
       const tokenResult = await user.getIdTokenResult();
-      const role = tokenResult.claims['role'];
+      const role = tokenResult.claims['role'] as string | undefined;
       return (typeof role === 'string' && role === 'admin');
     } catch (error) {
       console.error('Erro ao verificar role:', error);
@@ -42,7 +42,7 @@ export class AuthService {
     
     try {
       const tokenResult = await user.getIdTokenResult();
-      const role = tokenResult.claims['role'];
+      const role = tokenResult.claims['role'] as string | undefined;
       return (typeof role === 'string' ? role : 'user');
     } catch (error) {
       console.error('Erro ao obter role:', error);
@@ -58,18 +58,29 @@ export class AuthService {
   async login(email: string, password: string): Promise<void> {
     try {
       const userCredential = await signInWithEmailAndPassword(this.auth, email, password);
-      await userCredential.user.getIdToken(true);
+      console.log('Login Firebase bem-sucedido, atualizando token...');
+      try {
+        await userCredential.user.getIdToken(true);
+        console.log('Token atualizado');
+      } catch (tokenError) {
+        console.warn('Erro ao atualizar token (continuando mesmo assim):', tokenError);
+      }
+      console.log('Navegando para /consultores');
       this.router.navigate(['/consultores']);
     } catch (error) {
+      console.error('Erro no login:', error);
       throw error;
     }
   }
 
   async register(email: string, password: string): Promise<void> {
     try {
+      console.log('Registrando usuário:', email);
       await createUserWithEmailAndPassword(this.auth, email, password);
+      console.log('Registro Firebase bem-sucedido, navegando...');
       this.router.navigate(['/consultores']);
     } catch (error) {
+      console.error('Erro no registro:', error);
       throw error;
     }
   }
