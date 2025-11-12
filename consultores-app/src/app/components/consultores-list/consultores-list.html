@@ -6,8 +6,8 @@
 
   <div class="actions">
     <div class="action-buttons">
-      <button *ngIf="isAdmin" (click)="newConsultor()">Novo Consultor</button>
-      <button *ngIf="!isAdmin" (click)="editOwnProfile()">Editar Meu Perfil</button>
+      <button class="button_novo_consultor" *ngIf="isAdmin" (click)="newConsultor()">Novo Consultor</button>
+      <button class="button_novo_consultor" *ngIf="!isAdmin" (click)="editOwnProfile()">Meu Perfil</button>
     </div>
 
     <div class="filters">

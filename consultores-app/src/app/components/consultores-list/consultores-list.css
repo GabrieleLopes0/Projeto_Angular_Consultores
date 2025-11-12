@@ -51,7 +51,7 @@
   margin-bottom: 1.5rem;
 }
 
-.consultores-list-container .actions > button {
+.button_novo_consultor {
   padding: 0.7rem 1.4rem;
   border-radius: 0.6rem;
   border: none;
@@ -65,7 +65,7 @@
   transition: background 0.15s ease, transform 0.08s ease, box-shadow 0.15s ease;
 }
 
-.consultores-list-container .actions > button:hover {
+.button_novo_consultor:hover {
   background-color: rgb(18, 47, 98);
   transform: translateY(-1px);
   box-shadow: 0 4px 20px rgba(7, 3, 70, 0.4);
