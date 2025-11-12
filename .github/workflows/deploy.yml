@@ -9,6 +9,7 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     permissions:
       contents: write
     
@@ -20,26 +21,36 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-          cache: 'npm'
-          cache-dependency-path: consultores-app/package-lock.json
       
       - name: Install dependencies
         run: |
           cd consultores-app
-          npm ci
+          npm install
       
       - name: Build
         run: |
           cd consultores-app
           REPO_NAME="${{ github.event.repository.name }}"
+          echo "Repository name: $REPO_NAME"
           echo "Building with base-href: /$REPO_NAME/"
-          npm run build -- --configuration production --base-href /$REPO_NAME/
+          npx ng build --configuration production --base-href /$REPO_NAME/
         env:
           NODE_OPTIONS: '--max_old_space_size=4096'
+      
+      - name: Verify build output
+        run: |
+          if [ ! -d "consultores-app/dist/consultores-app/browser" ]; then
+            echo "❌ Build output directory not found!"
+            ls -la consultores-app/dist/
+            exit 1
+          fi
+          echo "✅ Build output found"
+          ls -la consultores-app/dist/consultores-app/browser/ | head -10
       
       - name: Create .nojekyll file
         run: |
           touch ./consultores-app/dist/consultores-app/browser/.nojekyll
+          echo "✅ Created .nojekyll file"
       
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
