@@ -1,9 +1,7 @@
-# Script para verificar se MongoDB está instalado e rodando
 
 Write-Host "=== Verificação do MongoDB ===" -ForegroundColor Cyan
 Write-Host ""
 
-# Verificar se MongoDB está instalado
 Write-Host "1. Verificando instalação..." -ForegroundColor Yellow
 try {
     $mongodVersion = mongod --version 2>&1
@@ -23,7 +21,6 @@ try {
 
 Write-Host ""
 
-# Verificar se o serviço está rodando
 Write-Host "2. Verificando serviço..." -ForegroundColor Yellow
 try {
     $service = Get-Service -Name MongoDB -ErrorAction SilentlyContinue
@@ -53,7 +50,7 @@ try {
 
 Write-Host ""
 
-# Verificar arquivo .env
+
 Write-Host "3. Verificando arquivo .env..." -ForegroundColor Yellow
 $envPath = Join-Path $PSScriptRoot ".env"
 if (Test-Path $envPath) {

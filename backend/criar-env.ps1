@@ -1,5 +1,4 @@
-# Script para criar arquivo .env para MongoDB Local
-# Execute este script após instalar o MongoDB
+
 
 $envPath = Join-Path $PSScriptRoot ".env"
 

@@ -1,11 +1,3 @@
-// CONFIGURAÇÃO DO FIREBASE
-// Para obter essas credenciais:
-// 1. Acesse https://console.firebase.google.com/
-// 2. Crie um projeto ou selecione um existente
-// 3. Clique no ícone </> (Web) para adicionar um app web
-// 4. Copie as credenciais que aparecem na tela
-// 5. Cole-as abaixo substituindo os valores YOUR_*
-
 export const environment = {
   production: false,
   apiUrl: 'http://localhost:3001/api',

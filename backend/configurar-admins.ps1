@@ -1,5 +1,4 @@
-# Script para configurar os 2 administradores
-# Uso: .\configurar-admins.ps1
+
 
 Write-Host ""
 Write-Host "Configurando Administradores" -ForegroundColor Cyan

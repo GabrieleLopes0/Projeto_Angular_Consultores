@@ -1,5 +1,4 @@
-# Script para criar arquivo .env com configurações do Firebase Admin SDK
-# Execute este script na pasta backend
+
 
 $envPath = Join-Path $PSScriptRoot ".env"
 

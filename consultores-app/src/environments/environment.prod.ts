@@ -1,5 +1,4 @@
-// CONFIGURAÇÃO DO FIREBASE PARA PRODUÇÃO
-// Use as mesmas credenciais do environment.ts
+
 
 export const environment = {
   production: true,
