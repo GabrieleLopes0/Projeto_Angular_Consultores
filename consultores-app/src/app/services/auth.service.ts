@@ -26,7 +26,8 @@ export class AuthService {
     
     try {
       const tokenResult = await user.getIdTokenResult();
-      return tokenResult.claims['role'] === 'admin';
+      const role = tokenResult.claims['role'];
+      return (typeof role === 'string' && role === 'admin');
     } catch (error) {
       console.error('Erro ao verificar role:', error);
       return false;
@@ -41,7 +42,8 @@ export class AuthService {
     
     try {
       const tokenResult = await user.getIdTokenResult();
-      return tokenResult.claims['role'] || 'user';
+      const role = tokenResult.claims['role'];
+      return (typeof role === 'string' ? role : 'user');
     } catch (error) {
       console.error('Erro ao obter role:', error);
       return 'user';
