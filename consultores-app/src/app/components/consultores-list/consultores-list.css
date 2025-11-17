@@ -1,19 +1,21 @@
 .consultores-list-container {
   max-width: 1100px;
   margin: 2.5rem auto;
-  padding: 2rem 2.5rem;
+  padding: 2rem 1.5rem;
   box-sizing: border-box;
   background-color: #ffffff;
   border-radius: 1rem;
   box-shadow: 0 8px 30px rgba(15, 23, 42, 0.08);
-  font-family: 'Poppins';
+  font-family: 'Poppins', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   color: #183878;
 }
 
+/* Cabeçalho */
 .consultores-list-container .header {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 1rem;
   margin-bottom: 1.5rem;
 }
 
@@ -22,22 +24,6 @@
   font-size: 1.8rem;
   font-weight: 700;
   color: #183878;
-}
-
-.table-responsive {
-  width: 100%;
-  overflow-x: auto; /* Adiciona rolagem horizontal */
-  -webkit-overflow-scrolling: touch;
-}
-
-.consultores-list-container th,
-.consultores-list-container td {
-  white-space: nowrap;
-  min-width: 100px;
-}
-
-.consultores-list-container td:last-child {
-  min-width: 150px;
 }
 
 .consultores-list-container .header button {
@@ -59,12 +45,20 @@
   box-shadow: 0 2px 10px rgba(148, 163, 184, 0.35);
 }
 
+/* Ações (botões + filtros) */
 .consultores-list-container .actions {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
   margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.consultores-list-container .action-buttons {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
 }
 
 .button_novo_consultor {
@@ -87,6 +81,7 @@
   box-shadow: 0 4px 20px rgba(7, 3, 70, 0.4);
 }
 
+/* Filtros */
 .consultores-list-container .filters {
   display: flex;
   align-items: center;
@@ -113,18 +108,25 @@
   box-shadow: 0 0 0 1px rgba(24, 56, 120, 0.5);
 }
 
-.consultores-list-container .loading,
-.consultores-list-container .no-data {
-  margin-top: 1rem;
-  font-size: 0.95rem;
-  color: #526689;
+/* Wrapper da tabela */
+.table-wrapper {
+  width: 100%;
 }
 
+/* Responsável pela barra de rolagem horizontal */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch; /* scroll suave no mobile */
+}
+
+/* Tabela */
 .consultores-list-container table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 0.5rem;
   font-size: 0.9rem;
+  min-width: 600px; /* garante largura para aparecer o scroll horizontal */
 }
 
 .consultores-list-container thead {
@@ -135,6 +137,7 @@
 .consultores-list-container td {
   padding: 0.75rem 0.8rem;
   text-align: left;
+  white-space: nowrap;
 }
 
 .consultores-list-container th {
@@ -157,6 +160,7 @@
   background-color: #eef2ff;
 }
 
+/* Botões da tabela */
 .consultores-list-container td button {
   padding: 0.4rem 0.8rem;
   border-radius: 0.5rem;
@@ -188,26 +192,40 @@
   background-color: #fecaca;
   transform: translateY(-1px);
 }
+
+/* Estados de carregamento e sem dados */
+.consultores-list-container .loading,
+.consultores-list-container .no-data {
+  margin-top: 1rem;
+  font-size: 0.95rem;
+  color: #526689;
+}
+
+/* 🔻 Responsivo (celular) */
 @media (max-width: 768px) {
   .consultores-list-container {
-    padding: 1.5rem;
+    margin: 1rem;
+    padding: 1.25rem;
+    border-radius: 0.75rem;
+  }
+
+  .consultores-list-container .header {
+    flex-direction: row;
+    align-items: center;
   }
 
   .consultores-list-container .actions {
     flex-direction: column;
     align-items: stretch;
-    gap: 1.5rem;
   }
 
-  .consultores-list-container .actions .action-buttons {
+  .consultores-list-container .action-buttons {
     width: 100%;
-    display: flex;
     justify-content: flex-start;
   }
 
   .button_novo_consultor {
-    flex-grow: 1;
-    text-align: center;
+    width: auto;
   }
 
   .consultores-list-container .filters {
@@ -220,7 +238,12 @@
     min-width: 0;
   }
 
+  .table-responsive {
+    margin-top: 0.5rem;
+  }
+
   .consultores-list-container table {
     font-size: 0.85rem;
+    min-width: 650px; /* força a tabela a ser maior que a tela -> aparece a barra de rolagem */
   }
 }
