@@ -172,7 +172,6 @@
   background-color: #fecaca;
   transform: translateY(-1px);
 }
-
 @media (max-width: 768px) {
   .consultores-list-container {
     margin: 1.5rem;
