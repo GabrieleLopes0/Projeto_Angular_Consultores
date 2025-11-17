@@ -24,6 +24,22 @@
   color: #183878;
 }
 
+.table-responsive {
+  width: 100%;
+  overflow-x: auto; /* Adiciona rolagem horizontal */
+  -webkit-overflow-scrolling: touch;
+}
+
+.consultores-list-container th,
+.consultores-list-container td {
+  white-space: nowrap;
+  min-width: 100px;
+}
+
+.consultores-list-container td:last-child {
+    min-width: 150px;
+}
+
 .consultores-list-container .header button {
   padding: 0.55rem 1.1rem;
   border-radius: 0.6rem;
