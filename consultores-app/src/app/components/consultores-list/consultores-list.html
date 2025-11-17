@@ -6,8 +6,12 @@
 
   <div class="actions">
     <div class="action-buttons">
-      <button class="button_novo_consultor" *ngIf="isAdmin" (click)="newConsultor()">Novo Consultor</button>
-      <button class="button_novo_consultor" *ngIf="!isAdmin" (click)="editOwnProfile()">Meu Perfil</button>
+      <button class="button_novo_consultor" *ngIf="isAdmin" (click)="newConsultor()">
+        Novo Consultor
+      </button>
+      <button class="button_novo_consultor" *ngIf="!isAdmin" (click)="editOwnProfile()">
+        Meu Perfil
+      </button>
     </div>
 
     <div class="filters">
@@ -15,7 +19,8 @@
         type="text"
         placeholder="Buscar por nome ou email..."
         [(ngModel)]="busca"
-        (input)="onBuscaChange()">
+        (input)="onBuscaChange()"
+      />
 
       <select [(ngModel)]="areaFiltro" (change)="onAreaChange()">
         <option value="">Todas as áreas</option>
@@ -24,34 +29,41 @@
     </div>
   </div>
 
-  <div *ngIf="loading" class="loading">Carregando...</div>
+  <div class="consultores-list-container">
+    <div *ngIf="loading" class="loading">Carregando...</div>
 
-  <table class="table-responsive" *ngIf="!loading && filteredConsultores.length > 0">
-    <thead>
-      <tr>
-        <th>Nome</th>
-        <th>Email</th>
-        <th>Telefone</th>
-        <th>Área</th>
-        <th>Data Cadastro</th>
-        <th>Ações</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let consultor of filteredConsultores">
-        <td>{{ consultor.nome }}</td>
-        <td>{{ consultor.email }}</td>
-        <td>{{ consultor.telefone }}</td>
-        <td>{{ consultor.areaEspecializacao }}</td>
-        <td>{{ formatDate(consultor.dataCadastro || consultor.createdAt) }}</td>
-        <td>
-          <button *ngIf="canEdit(consultor)" (click)="editConsultor(consultor._id!)">Editar</button>
-          <button *ngIf="canDelete(consultor)" (click)="deleteConsultor(consultor._id!)">Excluir</button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-
+    <div class="table-responsive" *ngIf="!loading && filteredConsultores.length > 0">
+      <table>
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Email</th>
+            <th>Telefone</th>
+            <th>Área</th>
+            <th>Data Cadastro</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let consultor of filteredConsultores">
+            <td>{{ consultor.nome }}</td>
+            <td>{{ consultor.email }}</td>
+            <td>{{ consultor.telefone }}</td>
+            <td>{{ consultor.areaEspecializacao }}</td>
+            <td>{{ formatDate(consultor.dataCadastro || consultor.createdAt) }}</td>
+            <td>
+              <button *ngIf="canEdit(consultor)" (click)="editConsultor(consultor._id!)">
+                Editar
+              </button>
+              <button *ngIf="canDelete(consultor)" (click)="deleteConsultor(consultor._id!)">
+                Excluir
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
   <div *ngIf="!loading && filteredConsultores.length === 0" class="no-data">
     <p>Nenhum consultor encontrado</p>
   </div>

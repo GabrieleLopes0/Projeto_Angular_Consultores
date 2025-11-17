@@ -37,7 +37,7 @@
 }
 
 .consultores-list-container td:last-child {
-    min-width: 150px;
+  min-width: 150px;
 }
 
 .consultores-list-container .header button {
@@ -190,13 +190,24 @@
 }
 @media (max-width: 768px) {
   .consultores-list-container {
-    margin: 1.5rem;
     padding: 1.5rem;
   }
 
   .consultores-list-container .actions {
     flex-direction: column;
     align-items: stretch;
+    gap: 1.5rem;
+  }
+
+  .consultores-list-container .actions .action-buttons {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+  }
+
+  .button_novo_consultor {
+    flex-grow: 1;
+    text-align: center;
   }
 
   .consultores-list-container .filters {
